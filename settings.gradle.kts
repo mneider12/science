@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "science"
-include("app", "consoleApp", "models", "list", "utilities")
+include("consoleApp", "models")
