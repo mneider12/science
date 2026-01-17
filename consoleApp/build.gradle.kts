@@ -7,5 +7,5 @@ dependencies {
 }
 
 application {
-    mainClass = "com.nydev.app.ConsoleAppKt"
+    mainClass = "com.nydev.MainKt"
 }
