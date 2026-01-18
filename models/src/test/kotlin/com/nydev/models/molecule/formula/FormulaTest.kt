@@ -28,9 +28,28 @@ class FormulaTest {
         assertEquals(AtomCount(Symbol.valueOf("O"), 2), formula.fragments.single())
     }
 
+    @Test fun create_multiLetterSymbol_setsAtomCount() {
+        val formula = Formula.create("He")
+        assertEquals(AtomCount(Symbol.HE, 1), formula.fragments.single())
+    }
+
+    @Test fun create_multiLetterSymbolWithCount_setsAtomCount() {
+        val formula = Formula.create("Na2")
+        assertEquals(AtomCount(Symbol.NA, 2), formula.fragments.single())
+    }
+
+    @Test fun create_mixedSymbols_setsAtomCounts() {
+        val formula = Formula.create("NaCl")
+        val expected = listOf(
+            AtomCount(Symbol.NA, 1),
+            AtomCount(Symbol.CL, 1),
+        )
+        assertEquals(expected, formula.fragments)
+    }
+
     @Test fun create_lowerCase_notSupported() {
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            Formula.create("He")
+            Formula.create("he")
         }
 
         assertEquals("Currently only capital letters are allowed in formulas", exception.message)
@@ -42,5 +61,13 @@ class FormulaTest {
         }
 
         assertEquals("Unsupported symbol: A", exception.message)
+    }
+
+    @Test fun create_unknownSymbol_threeDigits_notSupported() {
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            Formula.create("Uue")
+        }
+
+        assertEquals("Unsupported symbol: Uue", exception.message)
     }
 }

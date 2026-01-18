@@ -14,16 +14,22 @@ class Formula private constructor(val fragments: List<Fragment>) {
 
             var i = 0
             while (i < formulaString.length) {
+                val startSymbol = i
                 val char = formulaString[i]
                 if (!char.isUpperCase()) {
                     throw IllegalArgumentException("Currently only capital letters are allowed in formulas")
                 }
-                val symbol = try {
-                    Symbol.valueOf(char.toString())
-                } catch (e: IllegalArgumentException) {
-                    throw IllegalArgumentException("Unsupported symbol: $char")
-                }
                 i++
+                while (i < formulaString.length && formulaString[i].isLowerCase()) {
+                    i++
+                }
+                val symbolString = formulaString.substring(startSymbol, i)
+
+                val symbol = try {
+                    Symbol.valueOf(symbolString.uppercase())
+                } catch (e: IllegalArgumentException) {
+                    throw IllegalArgumentException("Unsupported symbol: $symbolString")
+                }
 
                 val count = if (i < formulaString.length && formulaString[i].isDigit()) {
                     val start = i
