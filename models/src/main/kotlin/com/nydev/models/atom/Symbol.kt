@@ -12,5 +12,5 @@ enum class Symbol(val display: String) {
     TL("Tl"), PB("Pb"), BI("Bi"), PO("Po"), AT("At"), RN("Rn"), FR("Fr"), RA("Ra"), AC("Ac"), TH("Th"),
     PA("Pa"), U("U"), NP("Np"), PU("Pu"), AM("Am"), CM("Cm"), BK("Bk"), CF("Cf"), ES("Es"), FM("Fm"),
     MD("Md"), NO("No"), LR("Lr"), RF("Rf"), DB("Db"), SG("Sg"), BH("Bh"), HS("Hs"), MT("Mt"), DS("Ds"),
-    RG("Rg"), CN("Cn"), NH("Nh"), FL("Fl"), MC("Mc"), LV("Lv"), TS("Ts"), OG("Og"), UUE("Uue"),
+    RG("Rg"), CN("Cn"), NH("Nh"), FL("Fl"), MC("Mc"), LV("Lv"), TS("Ts"), OG("Og"),
 }
