@@ -7,21 +7,34 @@ class Formula private constructor(val fragments: List<Fragment>) {
         /**
          * Create a new formula.
          *
-         * Currently only supports single letter atoms with no counts. E.g. HCN
+         * Supports single letter atoms with counts. E.g. HCN, O2
          */
         fun create(formulaString: String): Formula {
             val fragments = mutableListOf<Fragment>()
 
-            formulaString.forEach {
-                if (!it.isUpperCase()) {
+            var i = 0
+            while (i < formulaString.length) {
+                val char = formulaString[i]
+                if (!char.isUpperCase()) {
                     throw IllegalArgumentException("Currently only capital letters are allowed in formulas")
                 }
                 val symbol = try {
-                    Symbol.valueOf(it.toString())
+                    Symbol.valueOf(char.toString())
                 } catch (e: IllegalArgumentException) {
-                    throw IllegalArgumentException("Unsupported symbol: $it")
+                    throw IllegalArgumentException("Unsupported symbol: $char")
                 }
-                fragments.addLast(AtomCount(symbol, 1))
+                i++
+
+                val count = if (i < formulaString.length && formulaString[i].isDigit()) {
+                    val start = i
+                    while (i < formulaString.length && formulaString[i].isDigit()) {
+                        i++
+                    }
+                    formulaString.substring(start, i).toInt()
+                } else {
+                    1
+                }
+                fragments.addLast(AtomCount(symbol, count))
             }
 
             return Formula(fragments.toList())

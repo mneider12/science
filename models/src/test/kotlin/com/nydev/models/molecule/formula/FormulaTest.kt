@@ -22,6 +22,12 @@ class FormulaTest {
         assertEquals(expected, formula.fragments)
     }
 
+    @Test fun create_singleSymbolWithCount_setsAtomCount() {
+        val formula = Formula.create("O2")
+
+        assertEquals(AtomCount(Symbol.valueOf("O"), 2), formula.fragments.single())
+    }
+
     @Test fun create_lowerCase_notSupported() {
         val exception = assertThrows(IllegalArgumentException::class.java) {
             Formula.create("He")
