@@ -52,7 +52,7 @@ class FormulaTest {
             Formula.create("he")
         }
 
-        assertEquals("Currently only capital letters are allowed in formulas", exception.message)
+        assertEquals("Unexpected character h at index 0", exception.message)
     }
 
     @Test fun create_unsupportedSymbol_notSupported() {
@@ -69,5 +69,72 @@ class FormulaTest {
         }
 
         assertEquals("Unsupported symbol: Uue", exception.message)
+    }
+
+    @Test fun create_nestedGroup_parsedCorrectly() {
+        val formula = Formula.create("(NH4)2SO4")
+        val expected = listOf(
+            Group(
+                listOf(
+                    AtomCount(Symbol.N, 1),
+                    AtomCount(Symbol.H, 4)
+                ), 2
+            ),
+            AtomCount(Symbol.S, 1),
+            AtomCount(Symbol.O, 4)
+        )
+        assertEquals(expected, formula.fragments)
+    }
+
+    @Test fun create_simpleGroup_parsedCorrectly() {
+        val formula = Formula.create("Ca(OH)2")
+        val expected = listOf(
+            AtomCount(Symbol.CA, 1),
+            Group(
+                listOf(
+                    AtomCount(Symbol.O, 1),
+                    AtomCount(Symbol.H, 1)
+                ), 2
+            )
+        )
+        assertEquals(expected, formula.fragments)
+    }
+
+    @Test fun create_bracketsAndParentheses_parsedCorrectly() {
+        val formula = Formula.create("K4[Fe(CN)6]")
+        val expected = listOf(
+            AtomCount(Symbol.K, 4),
+            Group(
+                listOf(
+                    AtomCount(Symbol.FE, 1),
+                    Group(
+                        listOf(
+                            AtomCount(Symbol.C, 1),
+                            AtomCount(Symbol.N, 1)
+                        ), 6
+                    )
+                ), 1
+            )
+        )
+        assertEquals(expected, formula.fragments)
+    }
+
+    @Test fun create_braces_parsedCorrectly() {
+        val formula = Formula.create("{H2O}10")
+        val expected = listOf(
+            Group(
+                listOf(
+                    AtomCount(Symbol.H, 2),
+                    AtomCount(Symbol.O, 1)
+                ), 10
+            )
+        )
+        assertEquals(expected, formula.fragments)
+    }
+
+    @Test fun create_mismatchedBraces_throwsException() {
+         assertThrows(IllegalArgumentException::class.java) {
+             Formula.create("(OH]")
+         }
     }
 }
