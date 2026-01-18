@@ -20,56 +20,65 @@ class Formula private constructor(val fragments: List<Fragment>) {
         }
 
         private class Parser(val input: String) {
-            var i = 0
+            var currentIndex = 0
 
-            fun parse(closer: Char? = null): List<Fragment> {
+            fun parse(expectedCloser: Char? = null): List<Fragment> {
                 val fragments = mutableListOf<Fragment>()
 
-                while (i < input.length) {
-                    val char = input[i]
+                while (currentIndex < input.length) {
+                    val currentChar = input[currentIndex]
 
-                    if (char == closer) {
+                    if (currentChar == expectedCloser) {
                         return fragments
                     }
 
-                    if (char in BRACE_PAIRS) {
-                        val expectedCloser = BRACE_PAIRS[char]!!
-                        i++
-                        val parsedGroup = parse(expectedCloser)
-                        if (i >= input.length || input[i] != expectedCloser) {
-                           throw IllegalArgumentException("Mismatched or missing closing brace for $char starting at index $i")
-                        }
-                        i++ // consume closer
-                        val count = parseCount()
-                        fragments.add(Group(parsedGroup, count))
-                    } else if (BRACE_PAIRS.containsValue(char)) {
-                        // Found a closer but it wasn't the one we expected (or we expected none)
-                         if (closer == null) {
-                             throw IllegalArgumentException("Unexpected closing brace $char at index $i")
-                         } else {
-                             // This should be handled by the check inside the recursive call, 
-                             // effectively we return the fragments and let the caller check if it matched.
-                             return fragments
-                         }
-                    } else if (char.isUpperCase()) {
+                    if (currentChar in BRACE_PAIRS) {
+                        fragments.add(parseGroup(currentChar))
+                    } else if (BRACE_PAIRS.containsValue(currentChar)) {
+                        handleUnexpectedCloser(currentChar, expectedCloser)
+                        // If we returned, it means it matched expectedCloser in the recursive call
+                        return fragments
+                    } else if (currentChar.isUpperCase()) {
                         fragments.add(parseAtom())
                     } else {
-                        throw IllegalArgumentException("Unexpected character $char at index $i")
+                        throw IllegalArgumentException("Unexpected character $currentChar at index $currentIndex")
                     }
                 }
-                if (closer != null) {
-                    throw IllegalArgumentException("Missing closing brace $closer")
+                if (expectedCloser != null) {
+                    throw IllegalArgumentException("Missing closing brace $expectedCloser")
                 }
                 return fragments
             }
 
-            private fun parseAtom(): AtomCount {
-                val startSymbol = i
-                i++
-                while (i < input.length && input[i].isLowerCase()) {
-                    i++
+            private fun parseGroup(opener: Char): Group {
+                val expectedCloser = BRACE_PAIRS[opener]!!
+                currentIndex++ // consume opener
+                
+                val groupFragments = parse(expectedCloser)
+                
+                if (currentIndex >= input.length || input[currentIndex] != expectedCloser) {
+                    throw IllegalArgumentException("Mismatched or missing closing brace for $opener starting at index $currentIndex")
                 }
-                val symbolString = input.substring(startSymbol, i)
+                currentIndex++ // consume closer
+                val count = parseCount()
+                return Group(groupFragments, count)
+            }
+
+            private fun handleUnexpectedCloser(closer: Char, expectedCloser: Char?) {
+                if (expectedCloser == null) {
+                    throw IllegalArgumentException("Unexpected closing brace $closer at index $currentIndex")
+                }
+                // If it matches expectedCloser, it's handled by the return in the parse loop. 
+                // Any other closer mismatch logic effectively bubbles up or is handled by the caller checking the return.
+            }
+
+            private fun parseAtom(): AtomCount {
+                val startSymbol = currentIndex
+                currentIndex++
+                while (currentIndex < input.length && input[currentIndex].isLowerCase()) {
+                    currentIndex++
+                }
+                val symbolString = input.substring(startSymbol, currentIndex)
                 val symbol = try {
                     Symbol.valueOf(symbolString.uppercase())
                 } catch (e: IllegalArgumentException) {
@@ -81,12 +90,12 @@ class Formula private constructor(val fragments: List<Fragment>) {
             }
 
             private fun parseCount(): Int {
-                if (i < input.length && input[i].isDigit()) {
-                    val start = i
-                    while (i < input.length && input[i].isDigit()) {
-                        i++
+                if (currentIndex < input.length && input[currentIndex].isDigit()) {
+                    val start = currentIndex
+                    while (currentIndex < input.length && input[currentIndex].isDigit()) {
+                        currentIndex++
                     }
-                    return input.substring(start, i).toInt()
+                    return input.substring(start, currentIndex).toInt()
                 }
                 return 1
             }
