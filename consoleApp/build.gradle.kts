@@ -9,3 +9,7 @@ dependencies {
 application {
     mainClass = "com.nydev.MainKt"
 }
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
