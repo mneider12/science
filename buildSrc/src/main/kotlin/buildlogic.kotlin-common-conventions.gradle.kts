@@ -24,6 +24,8 @@ dependencies {
         implementation("org.apache.commons:commons-text:1.12.0")
     }
 
+    testImplementation(kotlin("test-junit5"))
+
     // Use JUnit Jupiter for testing.
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
 
