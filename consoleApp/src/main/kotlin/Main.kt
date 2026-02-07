@@ -47,14 +47,10 @@ fun calculateMolecularWeight() {
     print("Enter a chemical formula: ")
     val input = readlnOrNull() ?: return
 
-    try {
-        val formula = Formula.create(input)
-        val molecule = Molecule(formula)
-        val calculator = MolecularWeight()
-        val weight = calculator.calculate(molecule)
+    val formula = Formula.create(input)
+    val molecule = Molecule(formula)
+    val calculator = MolecularWeight()
+    val weight = calculator.calculate(molecule)
 
-        println("Molecular Weight of $input: $weight")
-    } catch (e: Exception) {
-        println("Error calculating weight: ${e.message}")
-    }
+    println("Molecular Weight of $input: $weight")
 }
