@@ -1,6 +1,6 @@
 package com.nydev.calculations
 
-import com.nydev.models.atom.AtomicWeights
+import com.nydev.data.AtomicWeights
 import com.nydev.models.molecule.Molecule
 import com.nydev.models.molecule.formula.AtomCount
 import com.nydev.models.molecule.formula.Fragment

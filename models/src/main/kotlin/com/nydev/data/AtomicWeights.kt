@@ -1,4 +1,6 @@
-package com.nydev.models.atom
+package com.nydev.data
+
+import com.nydev.models.atom.Symbol
 
 object AtomicWeights {
     private val weights = mapOf(
