@@ -1,6 +1,7 @@
 package com.nydev.models.molecule
 
-import com.nydev.models.molecule.formula.Formula
+import com.nydev.models.atom.Atom
+import com.nydev.models.bond.Bond
 
-class Molecule(val formula: Formula) {
+class Molecule(val structure: Map<Atom, List<Bond>>) {
 }
