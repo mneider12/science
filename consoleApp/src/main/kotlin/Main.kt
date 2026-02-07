@@ -1,7 +1,6 @@
 package com.nydev
 
 import com.nydev.models.molecule.formula.Formula
-import com.nydev.models.molecule.Molecule
 import com.nydev.calculations.MolecularWeight
 
 fun main() {
@@ -48,9 +47,8 @@ fun calculateMolecularWeight() {
     val input = readlnOrNull() ?: return
 
     val formula = Formula.create(input)
-    val molecule = Molecule(formula)
     val calculator = MolecularWeight()
-    val weight = calculator.calculate(molecule)
+    val weight = calculator.calculate(formula)
 
     println("Molecular Weight of $input: $weight")
 }
