@@ -1,4 +1,4 @@
-package com.nydev.calculations
+package com.nydev.data
 
 import com.nydev.models.atom.Symbol
 
