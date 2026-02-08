@@ -1,4 +1,4 @@
-package com.nydev.calculations.periodictable
+package com.nydev.data.periodictable
 
 import com.nydev.models.atom.Symbol
 
